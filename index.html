@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prompt2Post — AI Social Media Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<!-- Ambient background glows -->
+<div class="app-glow app-glow-1"></div>
+<div class="app-glow app-glow-2"></div>
+
+<div class="app">
+
+  <!-- ═══════════════════════════════════════
+       AUTH SCREEN
+  ═══════════════════════════════════════ -->
+  <section id="authScreen" class="auth-stage">
+
+    <div class="auth-logo">
+      <div class="wordmark">Prompt<span>2</span>Post</div>
+      <div class="tagline">AI-powered social content generation</div>
+    </div>
+
+    <!-- LOGIN CARD -->
+    <div class="auth-card active" id="loginCard">
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your account to continue</p>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input class="input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input class="input" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <div class="auth-actions">
+        <label class="checkbox">
+          <input type="checkbox" id="rememberMe" />
+          Remember me
+        </label>
+        <a class="link" id="forgotLink">Forgot password?</a>
+      </div>
+
+      <button class="btn btn-gold" id="loginBtn">Sign In</button>
+
+      <div class="auth-footer">
+        Don't have an account? <a class="link" id="goSignup">Create one</a>
+      </div>
+    </div>
+
+    <!-- SIGNUP CARD -->
+    <div class="auth-card" id="signupCard">
+      <h1 class="auth-title">Create account</h1>
+      <p class="auth-subtitle">Join Prompt2Post and start generating</p>
+
+      <div class="field">
+        <label>Full Name</label>
+        <input class="input" id="fullName" placeholder="Jane Smith" autocomplete="name" />
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input class="input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Password</label>
+          <input class="input" id="signupPassword" type="password" placeholder="Min 8 chars" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label>Confirm</label>
+          <input class="input" id="confirmPassword" type="password" placeholder="Repeat" autocomplete="new-password" />
+        </div>
+      </div>
+      <div class="hint">Must be at least 8 characters</div>
+
+      <div style="margin: 14px 0;">
+        <label class="checkbox">
+          <input type="checkbox" id="agree" />
+          I agree to the Terms of Service
+        </label>
+      </div>
+
+      <button class="btn btn-teal" id="signupBtn">Create Account</button>
+
+      <div class="auth-footer">
+        Already have an account? <a class="link" id="goLogin">Sign in</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       DASHBOARD
+  ═══════════════════════════════════════ -->
+  <section id="dashScreen" class="dash-shell hidden" aria-hidden="true">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div class="brand-name">Prompt<span>2</span>Post</div>
+      </div>
+
+      <nav class="nav">
+        <a id="navDashboard" class="active">
+          <span class="nav-icon">⚡</span> Dashboard
+        </a>
+        <a id="navHistory">
+          <span class="nav-icon">📋</span> History
+        </a>
+        <a id="navSettings">
+          <span class="nav-icon">⚙️</span> Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost" id="logoutBtn" style="font-size:13px; padding:9px 12px;">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <div class="topbar">
+        <h2 id="pageTitle">Dashboard</h2>
+        <div class="user">
+          <div class="avatar" id="avatarTxt">U</div>
+          <div id="userName">User</div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════
+           DASHBOARD PAGE
+      ════════════════════════════ -->
+      <section id="pageDashboard" class="page active">
+        <div class="dash-grid">
+
+          <!-- LEFT: Form Panel -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">
+                <strong>Create New Post</strong>
+                <span>Fill in details and generate your content</span>
+              </div>
+              <div class="ratio-badge" id="ratioPill">1080 × 1080</div>
+            </div>
+
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:14px;">
+
+              <!-- Platform -->
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:10px;">Platform</div>
+                <div class="platform-row">
+                  <button class="pill active" data-platform="instagram">📸 Instagram</button>
+                  <button class="pill" data-platform="linkedin">💼 LinkedIn</button>
+                  <button class="pill" data-platform="x">✖ X / Twitter</button>
+                  <button class="pill" data-platform="facebook">👥 Facebook</button>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <!-- Topic -->
+              <div class="field" style="margin-bottom:0;">
+                <label>Topic</label>
+                <input class="input" id="topic" placeholder="e.g. New product launch, team milestone…" />
+              </div>
+
+              <!-- Tone -->
+              <div class="field" style="margin-bottom:0;">
+                <label>Tone</label>
+                <select id="tone">
+                  <option value="conversational">Conversational</option>
+                  <option value="luxury">Luxury</option>
+                  <option value="minimal">Minimal</option>
+                  <option value="professional">Professional</option>
+                  <option value="bold">Bold</option>
+                </select>
+              </div>
+
+              <!-- Description -->
+              <div class="field" style="margin-bottom:0;">
+                <label>Description / Scene</label>
+                <textarea id="desc" class="input" placeholder="Describe the scene, mood, or key details for the image…"></textarea>
+              </div>
+
+              <div class="divider"></div>
+
+              <!-- Sliders -->
+              <div class="slider-group">
+                <div>
+                  <div class="slider-row">
+                    <span>Image Width</span>
+                    <span class="val" id="wLabel">1080px</span>
+                  </div>
+                  <input id="wRange" type="range" min="512" max="2048" step="16" value="1080" />
+                </div>
+                <div>
+                  <div class="slider-row">
+                    <span>Image Height</span>
+                    <span class="val" id="hLabel">1080px</span>
+                  </div>
+                  <input id="hRange" type="range" min="512" max="2048" step="16" value="1080" />
+                </div>
+              </div>
+
+              <!-- Generate -->
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:4px;">
+                <button class="btn-generate" id="generateBtn">✦ Generate New Post</button>
+                <span class="gen-status" id="genStatus">Ready</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT: Preview Column -->
+          <div class="preview-col">
+
+            <!-- Image Preview -->
+            <div class="image-frame">
+              <div class="image-frame-header">
+                <div class="preview-tag" id="previewTag">instagram • 1080×1080</div>
+              </div>
+              <div id="previewImage">
+                <span style="color:var(--ink3);font-size:13px;">Generated preview will appear here</span>
+              </div>
+            </div>
+
+            <!-- Caption Panel -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <strong>Generated Caption</strong>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="caption-layout">
+                  <div id="captionBox" class="caption-box" contenteditable="true" aria-label="Generated caption (editable)"></div>
+                  <div class="action-col">
+                    <button class="mini-btn primary" id="copyCaptionBtn">Copy Caption</button>
+                    <button class="mini-btn" id="downloadBtn">⬇ Download Image</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JSON Preview -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <strong>Prompt JSON</strong>
+                  <span>Last generated parameters</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <pre id="jsonPreview" class="caption-box mono" style="min-height:100px;"></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════
+           HISTORY PAGE
+      ════════════════════════════ -->
+      <section id="pageHistory" class="page">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">
+              <strong>Generation History</strong>
+              <span>Your last 30 generated posts</span>
+            </div>
+            <button class="mini-btn danger" id="clearHistoryBtn" style="width:auto;padding:8px 14px;">Clear All</button>
+          </div>
+          <div class="panel-body">
+            <div id="historyList" class="history-list"></div>
+            <div id="historyEmpty" class="small muted" style="padding:12px;display:none;">
+              No history yet. Go to Dashboard and generate your first post.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════
+           SETTINGS PAGE
+      ════════════════════════════ -->
+      <section id="pageSettings" class="page">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">
+              <strong>Settings</strong>
+              <span>Customize default generation behavior</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="settings-grid">
+
+              <!-- Left: Preferences -->
+              <div>
+                <div class="field">
+                  <label>Default Tone</label>
+                  <select id="setTone">
+                    <option value="conversational">Conversational</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="professional">Professional</option>
+                    <option value="bold">Bold</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Default Platform</label>
+                  <select id="setPlatform">
+                    <option value="instagram">Instagram</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="x">X / Twitter</option>
+                    <option value="facebook">Facebook</option>
+                  </select>
+                </div>
+
+                <label class="checkbox" style="margin-top:8px;">
+                  <input type="checkbox" id="setHashtags" />
+                  Include hashtags by default
+                </label>
+
+                <div class="settings-actions">
+                  <button class="btn btn-gold" id="saveSettingsBtn">Save Settings</button>
+                  <button class="btn btn-ghost" id="logoutBtn2" style="max-width:140px;">Sign Out</button>
+                </div>
+              </div>
+
+              <!-- Right: API Info
+              <div>
+                <div class="info-card">
+                  <strong>API Integration</strong>
+                  This dashboard connects to:<br>
+                  • HuggingFace SDXL — image generation<br>
+                  • HuggingFace Flan-T5 — caption generation<br>
+                  • Firebase Auth — authentication<br><br>
+                  All API keys are stored securely in the Flask backend. Never expose credentials in frontend JavaScript.
+                  <div class="api-badge">🔐 Keys stored server-side only</div>
+                </div>
+              </div> -->
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </section>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Done</div>
+
+<!-- ═══════════════════════════════════════
+     FIREBASE AUTH MODULE
+═══════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCLJnTTo0Z0JSONPH5j8m3ZIGGS7rLVzBI",
+  authDomain:        "prompt2post-181d1.firebaseapp.com",
+  projectId:         "prompt2post-181d1",
+  storageBucket:     "prompt2post-181d1.firebasestorage.app",
+  messagingSenderId: "1045946591556",
+  appId:             "1:1045946591556:web:fb02e9ea7cb6b56d2bcf11"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+
+// BUG FIX #7: Declare all DOM references explicitly (not as implicit globals)
+const authScreen = document.getElementById("authScreen");
+const dashScreen = document.getElementById("dashScreen");
+const userName   = document.getElementById("userName");
+const avatarTxt  = document.getElementById("avatarTxt");
+
+/* ── LOGIN ── */
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email    = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  if (!email || !password) { alert("Please enter email and password."); return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+/* ── SIGNUP ── */
+document.getElementById("signupBtn").addEventListener("click", async () => {
+  const name            = document.getElementById("fullName").value.trim();
+  const email           = document.getElementById("signupEmail").value.trim();
+  const password        = document.getElementById("signupPassword").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+  const agreed          = document.getElementById("agree").checked;
+
+  if (!name || !email || !password || !confirmPassword) { alert("Please fill in all fields."); return; }
+  if (password.length < 8)        { alert("Password must be at least 8 characters."); return; }
+  if (password !== confirmPassword){ alert("Passwords do not match."); return; }
+  if (!agreed)                    { alert("Please agree to the Terms of Service."); return; }
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Account created! You are now signed in.");
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+/* ── PASSWORD RESET ── */
+window.firebaseSendReset = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent. Check your inbox.");
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+/* ── LOGOUT ── */
+window.firebaseLogout = async () => {
+  await signOut(auth);
+};
+
+// Wire up second logout button in Settings
+document.getElementById("logoutBtn2")?.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+/* ── AUTH STATE ── */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    authScreen.classList.add("hidden");
+    dashScreen.classList.remove("hidden");
+    dashScreen.setAttribute("aria-hidden", "false");
+
+    const displayName = user.displayName || user.email;
+    if (userName)  userName.textContent  = user.email;
+    if (avatarTxt) avatarTxt.textContent = displayName.substring(0, 2).toUpperCase();
+  } else {
+    dashScreen.classList.add("hidden");
+    dashScreen.setAttribute("aria-hidden", "true");
+    authScreen.classList.remove("hidden");
+  }
+});
+
+/* ── TOKEN FOR BACKEND ── */
+window.getFirebaseToken = async () => {
+  const user = auth.currentUser;
+  if (!user) return null;
+  return await user.getIdToken();
+};
+</script>
+
+<!-- Flask Static JS -->
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+</html>
