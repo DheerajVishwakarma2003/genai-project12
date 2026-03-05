@@ -1,0 +1,9 @@
+flask
+flask-cors
+python-dotenv
+requests
+firebase-admin
+
+
+
+# venv\Scripts\activate
